@@ -12,7 +12,7 @@ export default function Contacts() {
   return (
     <>
       <Helmet>
-        <title>Your tasks</title>
+        <title>PHONEBOOK</title>
       </Helmet>
       <Section title="Add new contact">
         <PhonebookForm />
