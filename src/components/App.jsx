@@ -1,54 +1,56 @@
 import React from 'react';
-import { Filter } from 'components/PhonebookComponents/Filter/Filter';
-import { ContactsList } from 'components/PhonebookComponents/ContactsList/ContactsList';
-import { PhonebookForm } from 'components/PhonebookComponents/PhonebookForm/PhonebookForm';
-import { Section } from 'components/Section/Section';
-import { useGetContactsQuery } from '../redux/contactsSlice';
-import { TailSpin } from 'react-loader-spinner';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
+import { useAuth } from 'hooks';
+import { refreshUser } from 'redux/auth/operations';
+import { Layout } from './Layout';
+import { PrivateRoute } from 'components/PrivateRoute';
+import { RestrictedRoute } from 'components/RestrictedRoute';
+import Register from 'pages/Register';
+import Home from 'pages/Home';
+import Login from 'pages/Login';
+import Contacts from 'pages/Contacts';
 
 export const App = () => {
-  const { data, error, isLoading } = useGetContactsQuery();
+  const dispatch = useDispatch();
+  const { isRefreshing } = useAuth();
+
+  useEffect(() => {
+    dispatch(refreshUser());
+  }, [dispatch]);
 
   return (
     <>
-      <Section title="Add new contact">
-        <PhonebookForm />
-      </Section>
-      {isLoading && (
-        <Section>
-          <TailSpin
-            height="380"
-            width="380"
-            color="#4fa94d"
-            ariaLabel="tail-spin-loading"
-            radius="1"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </Section>
-      )}
-
-      {error && (
-        <Section>
-          <p>Oops, soomething went wrong</p>
-        </Section>
-      )}
-      {!isLoading && !error && data.length > 0 && (
-        <>
-          <Section title="Filter contacts">
-            <Filter />
-          </Section>
-
-          <Section title="Saved contacts">
-            <ContactsList />
-          </Section>
-        </>
-      )}
-      {!isLoading && !error && data.length === 0 && (
-        <Section>
-          <p>There are no saved contacts</p>
-        </Section>
+      {isRefreshing ? (
+        <b>Refreshing user...</b>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route
+              path="/register"
+              element={
+                <RestrictedRoute
+                  redirectTo="/contacts"
+                  component={<Register />}
+                />
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <RestrictedRoute redirectTo="/contacts" component={<Login />} />
+              }
+            />
+            <Route
+              path="/contacts"
+              element={
+                <PrivateRoute redirectTo="/login" component={<Contacts />} />
+              }
+            />
+          </Route>
+        </Routes>
       )}
     </>
   );

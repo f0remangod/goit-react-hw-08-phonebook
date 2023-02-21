@@ -32,7 +32,7 @@ export const PhonebookForm = () => {
     event.preventDefault();
     const contact = {
       name,
-      phone: number,
+      number,
     };
 
     const alreadyExists = data.findIndex(item => {

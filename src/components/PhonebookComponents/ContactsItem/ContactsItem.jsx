@@ -3,7 +3,7 @@ import { Name, Item, Btn } from './ContactsItem.styled';
 import { useDeleteContactMutation } from 'redux/contactsSlice';
 
 export const ContactsItem = ({ contact }) => {
-  const { id, name, phone } = contact;
+  const { id, name, number } = contact;
   const [deleteContact, result] = useDeleteContactMutation();
 
   return (
@@ -12,7 +12,7 @@ export const ContactsItem = ({ contact }) => {
         {!result.isLoading ? (
           <>
             <Name>{name}</Name>
-            <span>{phone}</span>
+            <span>{number}</span>
           </>
         ) : (
           <p style={{ color: 'grey' }}>Deleting contact...</p>
@@ -33,6 +33,6 @@ ContactsItem.propTypes = {
   contact: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
   }),
 };
