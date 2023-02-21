@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com/';
 
@@ -43,6 +44,7 @@ export const logIn = createAsyncThunk(
       // After successful login, add the token to the HTTP header
 
       setAuthHeader(res.data.token);
+      Notify.success(`Successfully logged in as ${res.data.user.name}`);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
